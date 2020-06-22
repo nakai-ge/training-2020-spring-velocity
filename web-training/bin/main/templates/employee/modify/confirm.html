@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>社員編集</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	   $(document).ready(function() {
+			$('#back_button').bind('click', function(){
+				var backUrl = /*[[@{/employee/modify/{employeeId}/back(employeeId=${employee.id.value})}]]*/ 'form.html';
+				$('#employee_form').attr('action', backUrl);
+				$('#employee_form').submit();
+			});
+		});
+	/*]]>*/
+	</script>
+	</head>
+<body>
+
+	<h1>社員編集</h1>
+
+	<form id="employee_form" th:action="@{/employee/modify/{employeeId}/execute(employeeId=${employee.id.value})}" th:object="${employee}" method="POST">
+		<table>
+			<tbody>
+				<tr>
+					<th>氏名</th>
+					<td th:text="*{name.fullName()}">社員 太郎</td>
+				</tr>
+				<tr>
+					<th>性別</th>
+					<td th:text="*{gender.label}">男性</td>
+				</tr>
+				<tr>
+					<th>生年月日</th>
+					<td th:text="*{dateOfBirth.value}">1983/06/14</td>
+				</tr>
+				<tr>
+					<th>所属部署</th>
+					<td th:text="${departmentList.departmentNameById(__*{department.id.value}__).value}">システム統括本部</td>
+				</tr>
+			</tbody>
+		</table>
+		<div>
+			<input type="hidden" th:field="*{id.value}" />
+			<input type="hidden" th:field="*{name.lastName}" />
+			<input type="hidden" th:field="*{name.firstName}" />
+			<input type="hidden" th:field="*{gender}" />
+			<input type="hidden" th:field="*{dateOfBirth.value}" />
+			<input type="hidden" th:field="*{department.id.value}" />
+		</div>
+		<p>
+			<input id="back_button" type="button" value="戻る" />
+			<input type="submit" value="変更">
+		</p>
+	</form>
+
+</body>
+</html>

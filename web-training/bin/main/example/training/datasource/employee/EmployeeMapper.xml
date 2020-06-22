@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="example.training.datasource.employee.EmployeeMapper">
+
+	<resultMap id="EmployeeId"
+		type="example.training.model.employee.EmployeeId">
+		<id column="employee_id" property="value"/>
+	</resultMap>
+
+	<resultMap id="Employee"
+		type="example.training.model.employee.Employee">
+		<id column="employee_id" property="id.value" />
+		<result column="first_name" property="name.firstName" />
+		<result column="last_name" property="name.lastName" />
+		<result column="date_of_birth" property="dateOfBirth.value" />
+		<result column="gender_type" property="gender" />
+		<result column="department_id" property="department.id.value" />
+		<result column="departmnet_name" property="department.name.value" />
+	</resultMap>
+
+	<select id="nextId" resultMap="EmployeeId">
+		select nextval('employee.employee_id_seq') employee_id
+	</select>
+
+	<select id="findById" resultMap="Employee">
+		SELECT
+			employee.id as employee_id,
+			employee.first_name,
+			employee.last_name,
+			employee.date_of_birth,
+			employee.gender_type,
+			department.id as department_id,
+			department.name as departmnet_name
+		FROM
+			employee.employee
+		INNER JOIN
+			employee.department
+		ON
+			employee.department_id = department.id
+		WHERE
+			employee.id = #{employeeId}
+	</select>
+
+	<select id="listOf" resultMap="Employee">
+		SELECT
+			employee.id as employee_id,
+			employee.first_name,
+			employee.last_name,
+			employee.date_of_birth,
+			employee.gender_type,
+			department.id as department_id,
+			department.name as departmnet_name
+		FROM
+			employee.employee
+		INNER JOIN
+			employee.department
+		ON
+			employee.department_id = department.id
+	</select>
+
+	<select id="listOfCriteria" resultMap="Employee">
+		SELECT
+			employee.id as employee_id,
+			employee.first_name,
+			employee.last_name,
+			employee.date_of_birth,
+			employee.gender_type,
+			department.id as department_id,
+			department.name as departmnet_name
+		FROM
+			employee.employee
+		INNER JOIN
+			employee.department
+		ON
+			employee.department_id = department.id
+		<where>
+			<if test="criteria.selectedDepartmentId.notEmpty">
+				department.id = #{criteria.selectedDepartmentId.value}
+			</if>
+		</where>
+		ORDER BY employee.id
+		<if test="criteria.employeeIdPriority.desc">
+			DESC
+		</if>
+	</select>
+
+	<insert id="register">
+		INSERT INTO employee.employee(
+			id,
+			first_name,
+			last_name,
+			gender_type,
+			date_of_birth,
+			department_id
+		)
+		VALUES(
+			#{employeeId.value},
+			#{employee.name.firstName},
+			#{employee.name.lastName},
+			#{employee.gender},
+			#{employee.dateOfBirth.value},
+			#{employee.department.id.value}
+		)
+	</insert>
+
+	<update id="modify">
+		UPDATE employee.employee
+		SET
+			first_name = #{employee.name.firstName},
+			last_name = #{employee.name.lastName},
+			gender_type = #{employee.gender},
+			date_of_birth = #{employee.dateOfBirth.value},
+			department_id = #{employee.department.id.value}
+		WHERE
+			employee.id = #{employee.id.value}
+	</update>
+
+	<delete id="delete">
+		DELETE  FROM  employee.employee
+		WHERE
+			employee.id = #{employeeId}
+	</delete>
+</mapper>
