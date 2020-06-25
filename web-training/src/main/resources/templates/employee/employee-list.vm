@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+
+<title>社員一覧</title>
+</head>
+<body>
+	<h1>社員一覧</h1>
+	<div>
+		<form action="/training/employee" method="POST">
+			<p>
+				<label>部署</label>
+				<select name="selectedDepartmentId.value">
+					<option value="">---</option>
+					#foreach( $department in ${departmentList.values} )
+						<option value="${department.id.value}" #if(${department.id.value} == ${criteria.selectedDepartmentId.value}) selected #end>${department.name.value}</option>
+					#end
+				</select>
+			</p>
+			<p>
+				<label>表示順：社員ＩＤ</label>
+				#springFormRadioButtons('criteria.employeeIdPriority' ${criteria.employeeIdPriority.options()} '' '')
+			</p>
+			<p><input type="submit" value="検索"></p>
+		</form>
+
+	</div>
+	<table>
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>氏名</th>
+				<th>性別</th>
+				<th>所属部署</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			#foreach( $employee in ${employeeList.values} )
+				<tr>
+					<td>${employee.id.value}</td>
+					<td><a href="/training/employee/${employee.id.value}">${employee.name.fullName()}</a></td>
+					<td>${employee.gender.label}</td>
+					<td>${employee.department.name.value}</td>
+					<td>
+						<a href="/training/employee/delete/${employee.id.value}">削除</a>
+					</td>
+				</tr>
+			#end
+		</tbody>
+	</table>
+	<p>
+		<a href="/training/employee/register">社員登録</a>
+	</p>
+</body>
+</html>

@@ -5,10 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -30,7 +29,7 @@ public class EmployeeRegisterController {
 	@Autowired
 	private EmployeeService employeeService;
 
-	@GetMapping
+	@RequestMapping(method = RequestMethod.GET)
 	public String form(Model model) {
 		Employee employee = employeeFactory.create();
 		DepartmentList departmentList = departmentService.listOf();
@@ -39,7 +38,7 @@ public class EmployeeRegisterController {
 		return "employee/register/form";
 	}
 
-	@GetMapping("back")
+	@RequestMapping(path="back",method = RequestMethod.GET)
 	public String backForm(Employee employee,
 			Model model) {
 		DepartmentList departmentList = departmentService.listOf();
@@ -47,7 +46,7 @@ public class EmployeeRegisterController {
 		return "employee/register/form";
 	}
 
-	@PostMapping
+	@RequestMapping(method = RequestMethod.POST)
 	public String confirm(@Validated @ModelAttribute Employee employee,
 			BindingResult result,
 			Model model) {
@@ -58,7 +57,7 @@ public class EmployeeRegisterController {
 		return "employee/register/confirm";
 	}
 
-	@PostMapping("execute")
+	@RequestMapping(path="execute", method = RequestMethod.POST)
 	public String register(Employee employee,
 			SessionStatus sessionStatus) {
 		employeeService.register(employee);

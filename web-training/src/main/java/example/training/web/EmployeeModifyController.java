@@ -5,11 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import example.training.model.department.DepartmentList;
@@ -36,19 +35,19 @@ public class EmployeeModifyController {
 		return departmentService.listOf();
 	}
 
-	@GetMapping()
+	@RequestMapping(method = RequestMethod.GET)
 	public String form() {
 		return "employee/modify/form";
 	}
 
-	@PostMapping("back")
+	@RequestMapping(path="back", method = RequestMethod.POST)
 	public String backFrom(@ModelAttribute Employee employee,
 			RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute("employee", employee);
 		return "redirect:/employee/modify/" + employee.getId().getValue();
 	}
 
-	@PostMapping
+	@RequestMapping(method = RequestMethod.POST)
 	public String confirm(@Validated @ModelAttribute Employee employee,
 			BindingResult result,
 			Model model) {
@@ -57,7 +56,7 @@ public class EmployeeModifyController {
 		return "employee/modify/confirm";
 	}
 
-	@PostMapping("execute")
+	@RequestMapping(path="execute",method = RequestMethod.POST)
 	public String modify(@ModelAttribute Employee employee) {
 		employeeService.modify(employee);
 		return "redirect:/employee/" + employee.getId().getValue();

@@ -1,13 +1,13 @@
 package example.training.web;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import example.training.model.department.DepartmentList;
 import example.training.model.employee.Employee;
@@ -27,22 +27,24 @@ public class EmployeeController {
 	private DepartmentService departmentService;
 	@Autowired
 	private EmployeeListCriteriaFactory employeeListCriteriaFactory;
+	@Autowired
+    VelocityEngine velocityEngine;
 
-	@GetMapping
+	@RequestMapping(method = RequestMethod.GET)
 	public String employees(Model model) {
 		EmployeeListCriteria criteria = employeeListCriteriaFactory.create();
 		prepareEmployees(criteria, model);
 		return "employee/employee-list";
 	}
 
-	@PostMapping
+	@RequestMapping(method = RequestMethod.POST)
 	public String employeesSearch(@ModelAttribute EmployeeListCriteria criteria,
 			Model model) {
 		prepareEmployees(criteria, model);
 		return "employee/employee-list";
 	}
 
-	@GetMapping("{employeeId:\\d+}")
+	@RequestMapping(path = "{employeeId:\\d+}", method = RequestMethod.GET)
 	public String employee(
 			@PathVariable Integer employeeId,
 			Model model) {
@@ -55,7 +57,7 @@ public class EmployeeController {
 		EmployeeList employeeList = employeeSevice.listOf(criteria);
 		DepartmentList departmentList = departmentService.listOf();
 		model.addAttribute("criteria", criteria);
-		model.addAttribute("employeelist", employeeList);
+		model.addAttribute("employeeList", employeeList);
 		model.addAttribute("departmentList", departmentList);
 	}
 }
